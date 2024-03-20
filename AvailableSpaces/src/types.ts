@@ -11,6 +11,31 @@ interface AvailableSpace {
   room: string;
   availableFrom: string;
   availableUntil: string;
+  minutesAvailable: number;
 }
 
-export { Day, MeetingRequest, AvailableSpace };
+interface UniandesCourseSection {
+  schedules: UniandesCourseSchedule[]
+}
+
+type UniandesCourseSchedule = {
+  [key in Day]: string | null;
+} & {
+  time_ini: string;
+  time_fin: string;
+  classroom: string;
+}
+
+type RoomReservations = {
+  [key in Day]?: TimeBlock[];
+} & {
+  building: string;
+  room: string;
+};
+
+interface TimeBlock {
+  startMinute: number;
+  endMinute: number;
+}
+
+export { Day, MeetingRequest, AvailableSpace, UniandesCourseSection, RoomReservations, TimeBlock};

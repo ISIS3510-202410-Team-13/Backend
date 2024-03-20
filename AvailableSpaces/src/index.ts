@@ -20,5 +20,5 @@ app.get("/", async (req: Request<{}, {}, MeetingRequest>, res: Response<Availabl
 });
 
 app.listen(port, host, () => {
-  console.log(`[available-spaces]: Available Spaces Server is running at http://${host}:${port}`);
+  console.log(`[available-spaces] 🚀 Available Spaces Server is running at http://${host}:${port}`);
 });
