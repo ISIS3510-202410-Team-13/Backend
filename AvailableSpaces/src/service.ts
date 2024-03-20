@@ -25,7 +25,7 @@ const sectionToReservation = (course: UniandesCourseSection): (RoomReservations 
       const startMinute = transformToMinutes(schedule.time_ini);
       const endMinute = transformToMinutes(schedule.time_fin);
       const days = (["l", "m", "i", "j", "v", "s", "d"] as Day[]).filter(day => schedule[day]);
-      const daysWithTime = days.map(day => ({ day : { startMinute, endMinute } }));
+      const daysWithTime = Object.fromEntries(days.map(day => ([ day, [{ startMinute, endMinute }] ])));
       return { building, room, ...daysWithTime };
     } catch {
       return undefined;
@@ -78,7 +78,6 @@ fetchUniandesAPI();
 setInterval(fetchUniandesAPI, 1000 * 60 * 24);
 
 const checkIfRoomIsAvailable = (roomReservations: RoomReservations, dayOfWeek: Day, startMinute: number, endMinute: number) => {
-  if(roomReservations.building === "O" && roomReservations.room === "104") console.log(roomReservations, dayOfWeek, startMinute, endMinute);
   const dayReservations = roomReservations[dayOfWeek];
   if (!dayReservations || dayReservations.length === 0) return true;
   return !dayReservations.some(reservation => {
