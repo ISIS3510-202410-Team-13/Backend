@@ -93,11 +93,7 @@ func PlannerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Llamar al servicio GetAvailableTimeSlots
-	availableSlots, err := services.GetAvailableTimeSlots(userSchedules)
-	if err != nil {
-		http.Error(w, "Error al obtener los horarios disponibles", http.StatusInternalServerError)
-		return
-	}
+	availableSlots := services.GetAvailableTimeSlots(userSchedules)
 
 	// Establecer el tipo de contenido de la respuesta como JSON
 	w.Header().Set("Content-Type", "application/json")
