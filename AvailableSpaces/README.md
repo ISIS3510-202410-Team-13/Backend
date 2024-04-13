@@ -19,7 +19,7 @@ To install and run the AvailableSpaces service locally or in your environment, f
 Make a GET request to the following endpoint:
 
 ```
-GET https://available-spaces-dot-unischedule-5ee93.uc.r.appspot.com:3000/health
+GET https://available-spaces-dot-unischedule-5ee93.uc.r.appspot.com/health
 ```
 
 If the service is running correctly, you will receive the message `Available Spaces Server is running`.
@@ -29,7 +29,7 @@ If the service is running correctly, you will receive the message `Available Spa
 To query the AvailableSpaces service, make a POST request to the following endpoint:
 
 ```
-POST https://available-spaces-dot-unischedule-5ee93.uc.r.appspot.com:3000/spaces
+POST https://available-spaces-dot-unischedule-5ee93.uc.r.appspot.com/spaces
 ```
 
 Include the following JSON body in your request:
@@ -76,7 +76,7 @@ The response will be a JSON array containing objects with the following structur
 ### Example Call
 
 ```bash
-curl -X POST https://available-spaces-dot-unischedule-5ee93.uc.r.appspot.com:3000/spaces \
+curl -X POST https://available-spaces-dot-unischedule-5ee93.uc.r.appspot.com/spaces \
 -H "Content-Type: application/json" \
 -d '{"dayOfWeek": "m", "startTime": "0800", "endTime": "1200"}'
 ```
