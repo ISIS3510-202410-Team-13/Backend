@@ -66,6 +66,10 @@ const joinOverlappingTimeBlocks = (timeBlocks: TimeBlock[]): TimeBlock[] => {
 const fetchUniandesAPI = () => {
   axios.get('https://ofertadecursos.uniandes.edu.co/api/courses')
     .then(response => response.data)
+    .catch(error => {
+      console.error('[available-spaces] 🚨 Falling back to local data:', error)
+      return require('../data/fallback_courses.json');
+    })
     .then((data: UniandesCourseSection[]) => data.flatMap(sectionToReservation))
     .then(reservations => reservations.filter(reservation => buildingsWhiteList.includes(reservation!.building)))
     .then(reservations => roomsReservations = mergeReservationsByRoom(reservations as RoomReservations[]))
@@ -96,7 +100,7 @@ const calculateAvailableSpace = (roomReservations: RoomReservations, dayOfWeek: 
     }
     return acc;
   }, 0);
-  const endAvailable = dayReservations.reverse().reduce((acc, reservation) => {
+  const endAvailable = dayReservations.sort((a, b) => a.endMinute - b.endMinute).reverse().reduce((acc, reservation) => {
     if (endMinute <= reservation.startMinute) {
       return reservation.startMinute;
     }

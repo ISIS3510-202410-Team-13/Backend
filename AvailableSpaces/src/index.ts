@@ -1,24 +1,24 @@
 import express, { Express, Request, Response } from "express";
-import dotenv from "dotenv";
 import { MeetingRequest, AvailableSpace } from "./types";
 import { findAvailableSpaces } from "./service";
 import { validateBody } from "./validate";
 
-dotenv.config();
-
 const app: Express = express();
-const port = Number(process.env.PORT) || 3000;
-const host = process.env.HOST || "localhost";
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(validateBody);
 
-app.get("/", async (req: Request<{}, {}, MeetingRequest>, res: Response<AvailableSpace[]>) => {
+app.get("/health", (req: Request, res: Response) => {
+  res.status(200).send("Available Spaces Server is running").end();
+})
+
+app.post("/spaces", validateBody)
+app.post("/spaces", async (req: Request<{}, {}, MeetingRequest>, res: Response<AvailableSpace[]>) => {
   const { dayOfWeek, startTime, endTime } = req.body;
   const availableSpaces: AvailableSpace[] = await findAvailableSpaces(dayOfWeek, startTime, endTime);
-  res.send(availableSpaces);
+  res.status(200).send(availableSpaces).end();
 });
 
-app.listen(port, host, () => {
-  console.log(`[available-spaces] 🚀 Available Spaces Server is running at http://${host}:${port}`);
+app.listen(port, () => {
+  console.log(`[available-spaces] 🚀 Available Spaces Server is running at https://localhost:${port}`);
 });
