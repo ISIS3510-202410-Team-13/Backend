@@ -11,9 +11,12 @@ const port = Number(process.env.PORT) || 3000;
 const host = process.env.HOST || "localhost";
 
 app.use(express.json());
-app.use(validateBody);
 
-app.get("/", async (req: Request<{}, {}, MeetingRequest>, res: Response<AvailableSpace[]>) => {
+app.get("/health", (req: Request, res: Response) => {
+  res.send("Available Spaces Server is running");
+})
+
+app.get("/spaces", validateBody, async (req: Request<{}, {}, MeetingRequest>, res: Response<AvailableSpace[]>) => {
   const { dayOfWeek, startTime, endTime } = req.body;
   const availableSpaces: AvailableSpace[] = await findAvailableSpaces(dayOfWeek, startTime, endTime);
   res.send(availableSpaces);
