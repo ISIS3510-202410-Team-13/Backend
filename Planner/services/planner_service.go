@@ -121,7 +121,7 @@ func findAvailableTimeSlotsByDay(day string, timeBlocks []models.UserTimeBlock, 
 	// Agregar los timePoints correspondientes a los bloques de tiempo de los usuarios
 	for _, tb := range timeBlocks {
 		timePoints = append(timePoints, timePoint{time: tb.StartMinute, userID: tb.UserID, isBusy: true})
-		timePoints = append(timePoints, timePoint{time: tb.EndMinute, userID: tb.UserID, isBusy: false})
+		timePoints = append(timePoints, timePoint{time: tb.EndMinute + 1, userID: tb.UserID, isBusy: false})
 	}
 
 	// Ordenar los timePoints en orden ascendente
@@ -131,7 +131,7 @@ func findAvailableTimeSlotsByDay(day string, timeBlocks []models.UserTimeBlock, 
 
 	// Agregar los tiempos de inicio y fin únicos al array de timePoints
 	timePoints = append([]timePoint{{time: 0, userID: "--BEGIN--"}}, timePoints...) // Tiempo inicial del día
-	timePoints = append(timePoints, timePoint{time: 1440 - 1, userID: "--END--"})   // Tiempo final del día
+	timePoints = append(timePoints, timePoint{time: 1440, userID: "--END--"})       // Tiempo final del día
 
 	// Lista para almacenar los eventos planificados
 	var plannerEvents []models.PlannerEvent
@@ -146,11 +146,6 @@ func findAvailableTimeSlotsByDay(day string, timeBlocks []models.UserTimeBlock, 
 	// Iterar sobre cada timePoint
 	for i := 1; i < len(timePoints); i++ {
 
-		// Actualizar los usuarios disponibles en este intervalo de tiempo
-		if timePoints[i].isBusy {
-			decrementAvailableUsers(&availableUsers, timePoints[i].userID)
-		}
-
 		// Calcular la duración entre el tiempo previo y el tiempo actual
 		duration := timePoints[i].time - timePoints[i-1].time
 
@@ -161,7 +156,7 @@ func findAvailableTimeSlotsByDay(day string, timeBlocks []models.UserTimeBlock, 
 			event := models.PlannerEvent{
 				DayOfWeek:       day,
 				StartTime:       convertToTimeString(timePoints[i-1].time),
-				EndTime:         convertToTimeString(timePoints[i].time),
+				EndTime:         convertToTimeString(timePoints[i].time - 1),
 				UsersAvailable:  make([]string, len(availableUsers)),
 				AmountAvailable: len(availableUsers),
 			}
@@ -173,7 +168,12 @@ func findAvailableTimeSlotsByDay(day string, timeBlocks []models.UserTimeBlock, 
 			plannerEvents = append(plannerEvents, event)
 		}
 
-		// Actualizar los usuarios disponibles en este intervalo de tiempo
+		// Actualizar los usuarios disponibles en este intervalo de tiempo, es un startTime
+		if timePoints[i].isBusy {
+			decrementAvailableUsers(&availableUsers, timePoints[i].userID)
+		}
+
+		// Actualizar los usuarios disponibles en este intervalo de tiempo, es un endTime
 		if !timePoints[i].isBusy {
 			incrementAvailableUsers(&availableUsers, timePoints[i].userID)
 		}
