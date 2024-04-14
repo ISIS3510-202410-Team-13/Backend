@@ -154,15 +154,16 @@ func findAvailableTimeSlotsByDay(day string, timeBlocks []models.UserTimeBlock, 
 
 			// Crear un evento de PlannerEvent para este intervalo de tiempo
 			event := models.PlannerEvent{
-				DayOfWeek:       day,
-				StartTime:       convertToTimeString(timePoints[i-1].time),
-				EndTime:         convertToTimeString(timePoints[i].time - 1),
-				UsersAvailable:  make([]string, len(availableUsers)),
-				AmountAvailable: len(availableUsers),
+				DayOfWeek:      day,
+				StartTime:      convertToTimeString(timePoints[i-1].time),
+				EndTime:        convertToTimeString(timePoints[i].time - 1),
+				UsersAvailable: len(availableUsers),
+				Attendees:      make([]string, len(availableUsers)),
+				Duration:       duration,
 			}
 
 			// Copiar los usuarios disponibles al evento
-			copy(event.UsersAvailable, availableUsers)
+			copy(event.Attendees, availableUsers)
 
 			// Agregar el evento al slice de PlannerEvent
 			plannerEvents = append(plannerEvents, event)

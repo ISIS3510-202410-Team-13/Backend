@@ -14,7 +14,7 @@ type HelloMessage struct {
 func HelloHandler(w http.ResponseWriter, r *http.Request) {
 	// Definir el mensaje de respuesta
 	message := HelloMessage{
-		Message: "¡Hola desde el servidor Planner!",
+		Message: "Hello from the Planner service!",
 	}
 
 	// Establecer el tipo de contenido de la respuesta como JSON

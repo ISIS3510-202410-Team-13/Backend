@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"Planner/api/handlers"
 	"Planner/api/middlewares"
@@ -17,9 +18,16 @@ func main() {
 
 	// Configurar los manejadores de las rutas
 	router.HandleFunc("/hello", handlers.HelloHandler).Methods("GET")
-	router.Handle("/planner", middlewares.ValidatePlannerBodyMiddleware(http.HandlerFunc(handlers.PlannerHandler))).Methods("GET")
+	router.Handle("/planner", middlewares.ValidatePlannerBodyMiddleware(http.HandlerFunc(handlers.PlannerHandler))).Methods("POST")
+
+	// Leer el puerto del entorno
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+		log.Printf("Defaulting to port %s", port)
+	}
 
 	// Iniciar el servidor en el puerto 8080
-	log.Println("Server listening on port 8080...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Printf("Server listening on port %s...\n", port)
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }

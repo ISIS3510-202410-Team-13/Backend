@@ -9,11 +9,12 @@ type Event struct {
 
 // PlannerEvent representa un evento en el horario con información adicional
 type PlannerEvent struct {
-	DayOfWeek       string   `json:"dayOfWeek"`
-	StartTime       string   `json:"startTime"`
-	EndTime         string   `json:"endTime"`
-	UsersAvailable  []string `json:"usersAvailable"`
-	AmountAvailable int      `json:"amountAvailable"`
+	DayOfWeek      string   `json:"dayOfWeek"`
+	StartTime      string   `json:"startTime"`
+	EndTime        string   `json:"endTime"`
+	UsersAvailable int      `json:"usersAvailable"`
+	Attendees      []string `json:"attendees"`
+	Duration       int      `json:"duration"`
 }
 
 // TimeBlock representa un bloque de tiempo con un inicio y fin en minutos

@@ -1,0 +1,8 @@
+runtime: go122
+service: "planner"
+main: "./cmd"
+env: standard
+instance_class: B1
+manual_scaling:
+  instances: 1
+  

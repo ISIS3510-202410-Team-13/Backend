@@ -21,7 +21,7 @@ func PlannerHandler(w http.ResponseWriter, r *http.Request) {
 	var request PlannerRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "Error while decoding request:"+err.Error(), http.StatusBadRequest)
 		return
 	}
 
