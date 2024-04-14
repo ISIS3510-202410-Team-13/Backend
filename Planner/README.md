@@ -54,7 +54,7 @@ Include a JSON body with the following schema in your request:
 
 ```json
 {
-  ["userId"]: [
+  "userId": [
     {
       "dayOfWeek": "l|m|i|j|v|s|d",
       "startTime": "hhmm",
@@ -158,6 +158,196 @@ curl -X POST https://planner-dot-unischedule-5ee93.uc.r.appspot.com/planner \
 This command will return a JSON response like the following: 
 
 ```json
+[
+  {
+    "dayOfWeek": "m",
+    "startTime": "00:00",
+    "endTime": "23:59",
+    "usersAvailable": 3,
+    "attendees": [
+      "user1",
+      "user2",
+      "user3"
+    ],
+    "duration": 1440
+  },
+  {
+    "dayOfWeek": "d",
+    "startTime": "00:00",
+    "endTime": "23:59",
+    "usersAvailable": 3,
+    "attendees": [
+      "user1",
+      "user2",
+      "user3"
+    ],
+    "duration": 1440
+  },
+  {
+    "dayOfWeek": "j",
+    "startTime": "00:00",
+    "endTime": "23:59",
+    "usersAvailable": 3,
+    "attendees": [
+      "user1",
+      "user2",
+      "user3"
+    ],
+    "duration": 1440
+  },
+  {
+    "dayOfWeek": "v",
+    "startTime": "00:00",
+    "endTime": "07:59",
+    "usersAvailable": 3,
+    "attendees": [
+      "user1",
+      "user2",
+      "user3"
+    ],
+    "duration": 480
+  },
+  {
+    "dayOfWeek": "v",
+    "startTime": "08:00",
+    "endTime": "08:59",
+    "usersAvailable": 2,
+    "attendees": [
+      "user1",
+      "user3"
+    ],
+    "duration": 60
+  },
+  {
+    "dayOfWeek": "v",
+    "startTime": "09:00",
+    "endTime": "09:59",
+    "usersAvailable": 1,
+    "attendees": [
+      "user3"
+    ],
+    "duration": 60
+  },
+  {
+    "dayOfWeek": "v",
+    "startTime": "10:00",
+    "endTime": "10:00",
+    "usersAvailable": 0,
+    "attendees": [],
+    "duration": 1
+  },
+  {
+    "dayOfWeek": "v",
+    "startTime": "10:01",
+    "endTime": "11:00",
+    "usersAvailable": 1,
+    "attendees": [
+      "user2"
+    ],
+    "duration": 60
+  },
+  {
+    "dayOfWeek": "v",
+    "startTime": "11:01",
+    "endTime": "11:59",
+    "usersAvailable": 2,
+    "attendees": [
+      "user1",
+      "user2"
+    ],
+    "duration": 59
+  },
+  {
+    "dayOfWeek": "v",
+    "startTime": "12:00",
+    "endTime": "12:00",
+    "usersAvailable": 1,
+    "attendees": [
+      "user1"
+    ],
+    "duration": 1
+  },
+  {
+    "dayOfWeek": "v",
+    "startTime": "12:01",
+    "endTime": "13:59",
+    "usersAvailable": 2,
+    "attendees": [
+      "user1",
+      "user3"
+    ],
+    "duration": 119
+  },
+  {
+    "dayOfWeek": "v",
+    "startTime": "14:00",
+    "endTime": "14:00",
+    "usersAvailable": 1,
+    "attendees": [
+      "user3"
+    ],
+    "duration": 1
+  },
+  {
+    "dayOfWeek": "v",
+    "startTime": "14:01",
+    "endTime": "16:00",
+    "usersAvailable": 2,
+    "attendees": [
+      "user2",
+      "user3"
+    ],
+    "duration": 120
+  },
+  {
+    "dayOfWeek": "v",
+    "startTime": "16:01",
+    "endTime": "23:59",
+    "usersAvailable": 3,
+    "attendees": [
+      "user1",
+      "user2",
+      "user3"
+    ],
+    "duration": 479
+  },
+  {
+    "dayOfWeek": "i",
+    "startTime": "00:00",
+    "endTime": "23:59",
+    "usersAvailable": 3,
+    "attendees": [
+      "user1",
+      "user2",
+      "user3"
+    ],
+    "duration": 1440
+  },
+  {
+    "dayOfWeek": "s",
+    "startTime": "00:00",
+    "endTime": "23:59",
+    "usersAvailable": 3,
+    "attendees": [
+      "user1",
+      "user2",
+      "user3"
+    ],
+    "duration": 1440
+  },
+  {
+    "dayOfWeek": "l",
+    "startTime": "00:00",
+    "endTime": "23:59",
+    "usersAvailable": 3,
+    "attendees": [
+      "user1",
+      "user2",
+      "user3"
+    ],
+    "duration": 1440
+  }
+]
 ```
 
 ## Troubleshooting

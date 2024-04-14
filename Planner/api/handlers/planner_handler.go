@@ -2,32 +2,31 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
+	"Planner/api/constants"
 	"Planner/models"
 	"Planner/services"
 )
-
-// PlannerRequest es la estructura que representa la solicitud para la ruta /planner
-type PlannerRequest map[string][]models.Event
 
 // PlannerResponse es la estructura que representa la respuesta para la ruta /planner
 type PlannerResponse []models.PlannerEvent
 
 // PlannerHandler maneja las solicitudes a la ruta /planner
 func PlannerHandler(w http.ResponseWriter, r *http.Request) {
+
 	// Decodificar el cuerpo de la solicitud en un PlannerRequest
-	var request PlannerRequest
-	err := json.NewDecoder(r.Body).Decode(&request)
-	if err != nil {
-		http.Error(w, "Error while decoding request:"+err.Error(), http.StatusBadRequest)
+	plannerRequest, ok := r.Context().Value(constants.ContextKey{Key: "Planner"}).(map[string][]models.Event)
+	if !ok {
+		http.Error(w, "Error while decoding request body in handler", http.StatusInternalServerError)
 		return
 	}
 
 	// Convertir PlannerRequest a un mapa con el ID del usuario y valor ScheduleModel
 	var userSchedules []models.ScheduleModel
-	for userID, events := range request {
+	for userID, events := range plannerRequest {
 		// Crear ScheduleModel para el usuario actual
 		userSchedule := models.ScheduleModel{
 			ID: userID,
@@ -43,19 +42,19 @@ func PlannerHandler(w http.ResponseWriter, r *http.Request) {
 
 			startHourInt, err := strconv.Atoi(startHour)
 			if err != nil {
-				http.Error(w, "Error al convertir la hora de inicio a entero", http.StatusBadRequest)
+				http.Error(w, "Error when converting start hour to int", http.StatusBadRequest)
 			}
 			startMinuteInt, err := strconv.Atoi(startMinute)
 			if err != nil {
-				http.Error(w, "Error al convertir el minuto de inicio a entero", http.StatusBadRequest)
+				http.Error(w, "Error when converting start minute to int", http.StatusBadRequest)
 			}
 			endHourInt, err := strconv.Atoi(endHour)
 			if err != nil {
-				http.Error(w, "Error al convertir la hora de fin a entero", http.StatusBadRequest)
+				http.Error(w, "Error when converting end hour to int", http.StatusBadRequest)
 			}
 			endMinuteInt, err := strconv.Atoi(endMinute)
 			if err != nil {
-				http.Error(w, "Error al convertir el minuto de fin a entero", http.StatusBadRequest)
+				http.Error(w, "Error when converting end minute to int", http.StatusBadRequest)
 			}
 
 			// Calcular los minutos totales desde la medianoche para la hora de inicio y fin
@@ -85,7 +84,7 @@ func PlannerHandler(w http.ResponseWriter, r *http.Request) {
 			case "d":
 				userSchedule.Sunday = append(userSchedule.Sunday, timeBlock)
 			default:
-				http.Error(w, "Día de la semana no válido", http.StatusBadRequest)
+				http.Error(w, fmt.Sprintf("Invalid day of week '%s'", event.DayOfWeek), http.StatusBadRequest)
 			}
 		}
 		// Agregar el ScheduleModel al array

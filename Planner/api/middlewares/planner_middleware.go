@@ -1,10 +1,13 @@
 package middlewares
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"regexp"
 
+	"Planner/api/constants"
 	"Planner/models"
 )
 
@@ -21,46 +24,49 @@ func ValidatePlannerBodyMiddleware(next http.Handler) http.Handler {
 		var request map[string][]models.Event
 		err := json.NewDecoder(r.Body).Decode(&request)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, "Error while decoding JSON request body in middleware: "+err.Error(), http.StatusBadRequest)
 			return
 		}
+
+		// Almacenar el cuerpo de la solicitud decodificado en el contexto
+		ctx := context.WithValue(r.Context(), constants.ContextKey{Key: "Planner"}, request)
 
 		for _, events := range request {
 			for _, event := range events {
 
 				// Validar los campos del Event
 				if event.DayOfWeek == "" || event.StartTime == "" || event.EndTime == "" {
-					http.Error(w, "Missing required fields in request body", http.StatusBadRequest)
+					http.Error(w, "Missing required fields dayOfWeek, startTime or endTime in request body", http.StatusBadRequest)
 					return
 				}
 
 				// Validar el día de la semana
 				if !isValidDayOfWeek(event.DayOfWeek) {
-					http.Error(w, "Invalid day of week", http.StatusBadRequest)
+					http.Error(w, fmt.Sprintf("Invalid day of week '%s'", event.DayOfWeek), http.StatusBadRequest)
 					return
 				}
 
 				// Validar el formato de tiempo
 				if !isValidTimeFormat(event.StartTime, event.EndTime) {
-					http.Error(w, "Invalid time format", http.StatusBadRequest)
+					http.Error(w, fmt.Sprintf("Invalid time format for '%s' or '%s'", event.StartTime, event.EndTime), http.StatusBadRequest)
 					return
 				}
 
 				// Verificar si la hora de inicio es anterior a la hora de finalización
 				if event.StartTime >= event.EndTime {
-					http.Error(w, "Start time must be before end time", http.StatusBadRequest)
+					http.Error(w, fmt.Sprintf("Start time '%s' must be before end time '%s'", event.StartTime, event.EndTime), http.StatusBadRequest)
 					return
 				}
 
 				// Verificar el rango de tiempo
 				if !isValidTimeRange(event.StartTime, event.EndTime) {
-					http.Error(w, "Invalid time range", http.StatusBadRequest)
+					http.Error(w, fmt.Sprintf("Invalid time range for '%s' or '%s'", event.StartTime, event.EndTime), http.StatusBadRequest)
 					return
 				}
 
 				// Verificar los minutos
 				if !isValidMinutes(event.StartTime, event.EndTime) {
-					http.Error(w, "Invalid minutes", http.StatusBadRequest)
+					http.Error(w, fmt.Sprintf("Invalid minutes for '%s' or '%s'", event.StartTime, event.EndTime), http.StatusBadRequest)
 					return
 				}
 
@@ -68,7 +74,7 @@ func ValidatePlannerBodyMiddleware(next http.Handler) http.Handler {
 		}
 
 		// Si todas las validaciones pasan, continuar con el siguiente middleware o controlador
-		next.ServeHTTP(w, r)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
