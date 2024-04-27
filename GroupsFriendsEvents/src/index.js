@@ -123,9 +123,30 @@ app.get('/group/:id/events', async (req, res) => {
   res.status(200).json(events.filter(event => event !== null));
 });
 
-const port = process.env.PORT;
+app.post('/user/:id/events', async (req, res) => {
+  const { id } = req.params;
+  const eventData = req.body;
+  const userRef = db.collection('Users').doc(id);
+  const userSnapshot = await userRef.get();
+  if (!userSnapshot.exists) {
+      return res.status(404).send('User not found');
+  }
+  const eventRef = await db.collection('Events').add({
+      ...eventData,
+  });
+
+  await userRef.update({
+      events: admin.firestore.FieldValue.arrayUnion(eventRef.id)
+  });
+
+  res.status(201).json({
+      message: 'Event added successfully',
+      eventId: eventRef.id
+  });
+});
+
+const port = process.env.PORT||3000;
 
 app.listen(port, () => {
 console.log(`Server running at http://localhost:${port}`);
 });
-
