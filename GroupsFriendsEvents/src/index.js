@@ -128,6 +128,42 @@ app.get('/group/:id/events', async (req, res) => {
   res.status(200).json(events.filter(event => event !== null));
 });
 
+app.post('/groups', async (req, res) => {
+  const { name, members, groupPicture, color, icon } = req.body;
+
+  const groupRef = firestore.collection('Groups').doc();
+  const emojis = ['😊', '👍', '🌟', '🎉', '🔥', '💻', '🎨', '📚', '⚽', '🎵'];
+  const randomEmoji = icon || emojis[Math.floor(Math.random() * emojis.length)]; 
+
+  try {
+      await groupRef.set({
+          name: name || 'Nuevo Grupo',
+          groupPicture: groupPicture || 'https://picsum.photos/1080',
+          color: color || '#FFFFFF',
+          icon: randomEmoji,
+          members: members,
+          events: []
+      });
+
+      const memberUpdates = members.map(memberId => {
+          const userRef = firestore.collection('Users').doc(memberId);
+          return userRef.update({
+              groups: admin.firestore.FieldValue.arrayUnion(groupRef.id)
+          });
+      });
+
+      await Promise.all(memberUpdates);
+
+      res.status(201).json({
+          message: 'Group created successfully',
+          groupId: groupRef.id
+      });
+  } catch (error) {
+      console.error('Error creating group:', error);
+      res.status(500).send('Failed to create group');
+  }
+});
+
 app.post('/user/:id/events', async (req, res) => {
   const { id } = req.params;
   const eventData = req.body;
