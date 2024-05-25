@@ -188,10 +188,10 @@ app.post('/user/:id/events', async (req, res) => {
 
 app.post('/analytics/:id/button-tap', async (req, res) => {
   const { id } = req.params;
-  const { buttonName, timestamp } = req.body;
+  const { buttonName, timestamp, userType } = req.body;
   const datasetId = 'unischedule_analytics';
   const tableId = 'button_taps';
-  const rows = [{ buttonName, timestamp, userId: id }];
+  const rows = [{ buttonName, timestamp, userType, userId: id }];
   try {
     await bigqueryClient.dataset(datasetId).table(tableId).insert(rows);
     res.status(201).send('Button tap recorded');
@@ -204,10 +204,10 @@ app.post('/analytics/:id/button-tap', async (req, res) => {
 
 app.post('/analytics/:id/page-view', async (req, res) => {
   const { id } = req.params;
-  const { pageName, timestamp } = req.body;
+  const { pageName, timestamp, userType } = req.body;
   const datasetId = 'unischedule_analytics';
   const tableId = 'page_views';
-  const rows = [{ pageName, timestamp, userId: id }];
+  const rows = [{ pageName, timestamp, userType, userId: id }];
   try {
     await bigqueryClient.dataset(datasetId).table(tableId).insert(rows);
     res.status(201).send('Page view recorded');
@@ -220,10 +220,10 @@ app.post('/analytics/:id/page-view', async (req, res) => {
 
 app.post('/analytics/:id/event', async (req, res) => {
   const { id } = req.params;
-  const { eventName, timestamp } = req.body;
+  const { eventName, timestamp, userType } = req.body;
   const datasetId = 'unischedule_analytics';
   const tableId = 'events';
-  const rows = [{ eventName, timestamp, userId: id }];
+  const rows = [{ eventName, timestamp, userType, userId: id }];
   try {
     await bigqueryClient.dataset(datasetId).table(tableId).insert(rows);
     res.status(201).send('Event recorded');
@@ -231,6 +231,22 @@ app.post('/analytics/:id/event', async (req, res) => {
   catch (error) {
     console.error('BigQuery error:', error);
     res.status(500).send('An error occurred while recording the event');
+  }
+});
+
+app.post('/analytics/:id/rating', async (req, res) => {
+  const { id } = req.params;
+  const { rating, classroom, timestamp, userType } = req.body;
+  const datasetId = 'unischedule_analytics';
+  const tableId = 'ratings';
+  const rows = [{ rating, classroom, timestamp, userType, userId: id }];
+  try {
+    await bigqueryClient.dataset(datasetId).table(tableId).insert(rows);
+    res.status(201).send('Rating recorded');
+  }
+  catch (error) {
+    console.error('BigQuery error:', error);
+    res.status(500).send('An error occurred while recording the rating');
   }
 });
 
