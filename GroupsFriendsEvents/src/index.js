@@ -128,6 +128,7 @@ app.get('/group/:id/events', async (req, res) => {
   res.status(200).json(events.filter(event => event !== null));
 });
 
+
 app.post('/groups', async (req, res) => {
   const { name, members, groupPicture, color, icon } = req.body;
 
